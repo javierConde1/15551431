@@ -1,0 +1,3 @@
+Microsoft windows [version 10.0 16299.192]
+
+c:\Users\Karely>mysqldump -h localhost-u root -p --all-databases > my_databases.sql

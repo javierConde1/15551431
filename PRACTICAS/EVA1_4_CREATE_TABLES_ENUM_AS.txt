@@ -1,0 +1,187 @@
+MySQL Shell 1.0.11
+
+Copyright (c) 2016, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+
+Currently in JavaScript mode. Use \sql to switch to SQL mode and execute queries
+.
+mysql-js> \sql
+Switching to SQL mode... Commands end with ;
+mysql-sql> \connect -c root@localhost
+Creating a Classic Session to 'root@localhost'
+Enter password:
+Your MySQL connection id is 12
+Server version: 5.5.8-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| banco2             |
+| datoscoches        |
+| examen             |
+| ifwoew             |
+| inventario         |
+| jiuiu              |
+| mundo              |
+| mysql              |
+| performance_schema |
+| practica2          |
+| practica2azteca    |
+| test               |
++--------------------+
+13 rows in set (0.03 sec)
+mysql-sql> \use inventario
+Schema set to `inventario`.
+mysql-sql> show tables;
++-----------------------------------+
+| Tables_in_inventario              |
++-----------------------------------+
+| clientes                          |
+| empleados                         |
+| idciudad                          |
+| inventario                        |
+| productos                         |
+| proveedor                         |
+| proveedor_has_productos           |
+| ventas                            |
+| ventas_has_clientes               |
+| ventas_has_clientes_has_productos |
++-----------------------------------+
+10 rows in set (0.01 sec)
+mysql-sql> create table mundo.copia_idciudad as select * from inventario.idciuda
+d
+       ... ;
+Query OK, 10 rows affected (0.15 sec)
+
+Records: 10  Duplicates: 0  Warnings: 0
+mysql-sql> \use mundo
+Schema set to `mundo`.
+mysql-sql> show tables;
++-----------------+
+| Tables_in_mundo |
++-----------------+
+| copia_idciudad  |
+| paises          |
+| paises_copia    |
++-----------------+
+3 rows in set (0.01 sec)
+mysql-sql> select * from copia_idciudad limit 5;
++----------+-----------+
+| IdCiudad | Nombre    |
++----------+-----------+
+|        1 | Chihuahua |
+|        2 | Aldama    |
+|        3 | Camargo   |
+|        4 | Juarez    |
+|        5 | Cuahtemoc |
++----------+-----------+
+5 rows in set (0.02 sec)
+mysql-sql> create temporary table mundo.copia_idciudad_temp as select * from inv
+entario.idciudad;
+Query OK, 10 rows affected (0.06 sec)
+
+Records: 10  Duplicates: 0  Warnings: 0
+mysql-sql> \use mundo
+Schema set to `mundo`.
+mysql-sql> show tables;
++-----------------+
+| Tables_in_mundo |
++-----------------+
+| copia_idciudad  |
+| paises          |
+| paises_copia    |
++-----------------+
+3 rows in set (0.00 sec)
+mysql-sql> select * from copia_idciudad_temp limit 5;
++----------+-----------+
+| IdCiudad | Nombre    |
++----------+-----------+
+|        1 | Chihuahua |
+|        2 | Aldama    |
+|        3 | Camargo   |
+|        4 | Juarez    |
+|        5 | Cuahtemoc |
++----------+-----------+
+5 rows in set (0.00 sec)
+mysql-sql> \connect -c Juanito@localhost
+Creating a Classic Session to 'Juanito@localhost'
+Enter password: *
+Closing old connection...
+Your MySQL connection id is 15
+Server version: 5.5.8-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mundo              |
+| test               |
++--------------------+
+3 rows in set (0.00 sec)
+mysql-sql> create table comida_mundo(
+       ... comida_id int,
+       ... nombre_comida ENUM("TACOS", "BURRITOS", "CARNE ASADA", "TLACOYOS"),
+       ... precio decimal(10,2));
+ERROR: 1046 (3D000): No database selected
+mysql-sql> use mundo;
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> create table comida_mundo(
+       ... nombre_comida ENUM("TACOS", "BURRITOS", "CARNE ASADA", "TLACOYOS"),
+       ... precio decimal(10,2));
+Query OK, 0 rows affected (0.10 sec)
+mysql-sql> desc comida_mundo;
++---------------+---------------------------------------------------+------+----
+-+---------+-------+
+| Field         | Type                                              | Null | Key
+ | Default | Extra |
++---------------+---------------------------------------------------+------+----
+-+---------+-------+
+| nombre_comida | enum('TACOS','BURRITOS','CARNE ASADA','TLACOYOS') | YES  |
+ | null    |       |
+| precio        | decimal(10,2)                                     | YES  |
+ | null    |       |
++---------------+---------------------------------------------------+------+----
+-+---------+-------+
+2 rows in set (0.05 sec)
+mysql-sql> insert into comida_mundo values(1,"burritos", 10.2);
+ERROR: 1136 (21S01): Column count doesn't match value count at row 1
+mysql-sql> insert into comida_mundo values(1,"BURRITOS", 10.2);
+ERROR: 1136 (21S01): Column count doesn't match value count at row 1
+mysql-sql> insert into comida_mundo values(1,"TACOS", 10.2);
+ERROR: 1136 (21S01): Column count doesn't match value count at row 1
+mysql-sql> select * from comida_mundo;
+Empty set (0.00 sec)
+mysql-sql> insert into comida_mundo values(1,"TACOS", 10.2);
+ERROR: 1136 (21S01): Column count doesn't match value count at row 1
+mysql-sql> insert into comida_mundo value(1,"TACOS", 10.2);
+ERROR: 1136 (21S01): Column count doesn't match value count at row 1
+mysql-sql> create table viajero(
+       ... viajero_id int not null,
+       ... articulo varchar(40),
+       ... viaticos decimal(10,2) not null);
+Query OK, 0 rows affected (0.03 sec)
+mysql-sql> desc viajero;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| viajero_id | int(11)       | NO   |     | null    |       |
+| articulo   | varchar(40)   | YES  |     | null    |       |
+| viaticos   | decimal(10,2) | NO   |     | null    |       |
++------------+---------------+------+-----+---------+-------+
+3 rows in set (0.02 sec)
+mysql-sql> insert into viajero ("articulo","viaticos") values ("algo",1000) ;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that
+ corresponds to your MySQL server version for the right syntax to use near '"art
+iculo","viaticos") values ("algo",1000)' at line 1
+mysql-sql> insert into viajero (viajero_id, articulo) values (2, "algo");
+Query OK, 1 row affected, 1 warning (0.06 sec)
+Warning (code 1364): Field 'viaticos' doesn't have a default value
+mysql-sql>
